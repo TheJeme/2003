@@ -21,9 +21,13 @@ function mainmenu:load()
   mainExitButton = newSquareButton(gw / 2+360, gh / 2 + 85, 150, "Exit", "", false, Red, White, 0, -23, function() love.event.quit(0) end, function() end)
 
   optionsLogoButton = newSquareButton(gw / 2-330-15, gh / 2 - 130, 180, "Options", "", true, Lavender, White, 0, -34)
-  optionsResolutionButton = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", "1920 x 1080", false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
-  optionsVolumeButton = newSquareButton(gw / 2+130, gh / 2 - 85, 150, "Volume", "100%", false, Blue, White, 0, -23, function() mainmenu:changeVolume(5) end, function() mainmenu:changeVolume(-5) end)
-  optionsBackButton = newSquareButton(gw / 2+360, gh / 2 + 85, 150, "Back", "", false, Red, White, 0, -23, function() menuState = "main" end, function() end)
+  if (resolutionIndex == 8) then
+    optionsResolutionButton = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", "Fullscreen", false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
+  else
+    optionsResolutionButton = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", resolutionList[resolutionIndex][1] .." x " .. resolutionList[resolutionIndex][2], false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
+  end
+  optionsVolumeButton = newSquareButton(gw / 2+130, gh / 2 - 85, 150, "Volume", volumeValue .. "%", false, Blue, White, 0, -23, function() mainmenu:changeVolume(5) end, function() mainmenu:changeVolume(-5) end)
+  optionsBackButton = newSquareButton(gw / 2+360, gh / 2 + 85, 150, "Back", "", false, Red, White, 0, -23, function() mainmenu:saveSettings() menuState = "main" end, function() end)
 
   levelsLogoButton = newSquareButton(gw / 2-330-15, gh / 2 - 130, 180, "Levels", "", true, Lavender, White, 0, -34)
   Levels1Button = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Super", "0%", false, Green, White, 0, -23, function() mainmenu:startLevel(1) end, function() end)
@@ -174,88 +178,6 @@ function mainmenu:keypressed(key)
   end
 end
 
-function mainmenu:menuScreen()
-  if (menuSelected == 1) then
-    mainmenu:baseLayout(Green)
-    love.graphics.setFont(titleFont)
-    love.graphics.printf("Play", 0, gh/2-35, gw, "center")
-  elseif (menuSelected == 2) then
-    mainmenu:baseLayout(Purple)
-    love.graphics.setFont(titleFont)
-    love.graphics.printf("Options", 0, gh/2-35, gw, "center")
-  elseif (menuSelected == 3) then
-    mainmenu:baseLayout(Red)
-    love.graphics.setFont(titleFont)
-    love.graphics.printf("Quit", 0, gh/2-35, gw, "center")
-  end
-  love.graphics.setFont(difficultyFont)
-end
-
-
-function mainmenu:optionsScreen()
-  if (menuSelected == 1) then
-    mainmenu:baseLayout(Green)
-    love.graphics.setFont(titleFont)
-    love.graphics.printf("Resolution", 0, gh/2-50, gw, "center")
-    love.graphics.printf("1920 x 1080", 0, gh/2, gw, "center")
-  elseif (menuSelected == 2) then
-    mainmenu:baseLayout(Purple)
-    love.graphics.setFont(titleFont)
-    love.graphics.printf("Volume", 0, gh/2-50, gw, "center")
-    love.graphics.printf("100%", 0, gh/2, gw, "center")
-  elseif (menuSelected == 3) then
-    mainmenu:baseLayout(Red)
-    love.graphics.setFont(titleFont)
-    love.graphics.printf("Back", 0, gh/2-35, gw, "center")
-  end
-end
-
-
-function mainmenu:playScreen()
-  mainmenu:baseLayout(Blue)
-  love.graphics.setFont(titleFont)
-  if (menuSelected == 1) then
-    love.graphics.printf("Flower Dance", 0, gh/2-50, gw, "center")
-    love.graphics.setFont(difficultyFont)
-    love.graphics.printf("Easy", 0, gh/2+20, gw, "center")
-  elseif (menuSelected == 2) then
-    love.graphics.printf("Betrayal Fate", 0, gh/2-50, gw, "center")
-    love.graphics.setFont(difficultyFont)
-    love.graphics.printf("Normal", 0, gh/2+20, gw, "center")
-  elseif (menuSelected == 3) then
-    love.graphics.printf("Ultimate Destruction", 0, gh/2-50, gw, "center")
-    love.graphics.setFont(difficultyFont)
-    love.graphics.printf("Hard", 0, gh/2+20, gw, "center")
-  elseif (menuSelected == 4) then
-    love.graphics.printf("Erehamonika", 0, gh/2-50, gw, "center")
-    love.graphics.setFont(difficultyFont)
-    love.graphics.printf("Insane", 0, gh/2+20, gw, "center")
-  end
-end
-
-function mainmenu:baseLayout(color)
-  love.graphics.setColor(color)
-  love.graphics.circle("fill", gw/2, gh/2, 500, 4)
-  love.graphics.setColor(Opacity15)
-  love.graphics.polygon("fill", 460, gh/2,
-                                680, gh/2-220,
-                                680, gh/2+220)
-  love.graphics.polygon("fill", gw-460, gh/2,
-                              gw-680, gh/2-220,
-                              gw-680, gh/2+220)
-  love.graphics.setFont(logoFont)
-  love.graphics.setColor(White)
-  love.graphics.printf("2003", 0, 230, gw, "center")
-  love.graphics.setLineWidth(15)
-  love.graphics.circle("line", gw/2, gh/2, 500, 4)
-  love.graphics.line(620, gh/2-50,
-                     570, gh/2,
-                     620, gh/2+50)
-  love.graphics.line(gw-620, gh/2-50,
-                     gw-570, gh/2,
-                     gw-620, gh/2+50)
-end
-
 function mainmenu:changeResolution(value)
   changedResolution = true
   resolutionIndex = resolutionIndex + value
@@ -263,6 +185,11 @@ function mainmenu:changeResolution(value)
     resolutionIndex = #resolutionList
   elseif (resolutionIndex > #resolutionList) then
     resolutionIndex = 1
+  end
+  if (resolutionIndex == 8) then
+    optionsResolutionButton = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", "Fullscreen", false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
+  else
+    optionsResolutionButton = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", resolutionList[resolutionIndex][1] .." x " .. resolutionList[resolutionIndex][2], false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
   end
 end
 
@@ -273,6 +200,7 @@ function mainmenu:changeVolume(value)
   elseif (volumeValue > 200) then
     volumeValue = 0
   end
+  optionsVolumeButton = newSquareButton(gw / 2+130, gh / 2 - 85, 150, "Volume", volumeValue .. "%", false, Blue, White, 0, -23, function() mainmenu:changeVolume(5) end, function() mainmenu:changeVolume(-5) end)
   menumusic:setVolume(volumeValue * 0.001)
 end
 

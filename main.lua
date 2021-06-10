@@ -12,7 +12,7 @@ local appId = require 'applicationId'
 function love.load()
   savemanager:load()
   volumeValue = savemanager.settings.volume or 100
-  resolutionIndex = savemanager.settings.resolutionIndex or 3
+  resolutionIndex = savemanager.settings.resolutionIndex or 8
   statemanager:load()
   simpleScale.setWindow(gw, gh, resolutionList[resolutionIndex][1], resolutionList[resolutionIndex][2], {fullscreen = true})
   love.window.setVSync(0)

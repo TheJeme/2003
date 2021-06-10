@@ -149,17 +149,13 @@ end
 
 function maingame:getSong()
   if (levelIndex == 1) then
-    return "Flower Dance"
+    return "Super"
   elseif (levelIndex == 2) then
-    return "Explorers"
+    return "Hyper"
   elseif (levelIndex == 3) then
-    return "Ultimate Destruction"
+    return "Ultra"
   elseif (levelIndex == 4) then
-    return "Lunar Abyss"
-  elseif (levelIndex == 5) then
-    return "Der Wald"
-  elseif (levelIndex == 6) then
-    return "Sines of Respect"
+    return "Extreme"
   end
 end
 
