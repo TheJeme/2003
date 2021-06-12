@@ -14,7 +14,12 @@ function love.load()
   volumeValue = savemanager.settings.volume or 100
   resolutionIndex = savemanager.settings.resolutionIndex or 8
   statemanager:load()
-  simpleScale.setWindow(gw, gh, resolutionList[resolutionIndex][1], resolutionList[resolutionIndex][2], {fullscreen = true})
+  if resolutionList[resolutionIndex][1] == 0 and resolutionList[resolutionIndex][2] == 0 then
+    isFullScreen = true
+  else
+    isFullScreen = false
+  end
+  simpleScale.setWindow(gw, gh, resolutionList[resolutionIndex][1], resolutionList[resolutionIndex][2], {fullscreen = isFullScreen})
   love.window.setVSync(0)
   joystick = nil
 

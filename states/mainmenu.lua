@@ -7,12 +7,11 @@ local audio = require "lib/wave"
 
 mainmenu = {}
 
-local menuSelected, menuState
+local menuState
 local menuBG
 
 function mainmenu:load()
   menuState = "main"
-  menuSelected = 1
   menuBG = love.graphics.newImage("assets/menubg.jpg")
 
   mainLogoButton = newSquareButton(gw / 2-330-15, gh / 2 - 130, 180, "2003", "", true, Lavender, White, 0, -34)
@@ -30,10 +29,10 @@ function mainmenu:load()
   optionsBackButton = newSquareButton(gw / 2+360, gh / 2 + 85, 150, "Back", "", false, Red, White, 0, -23, function() mainmenu:saveSettings() menuState = "main" end, function() end)
 
   levelsLogoButton = newSquareButton(gw / 2-330-15, gh / 2 - 130, 180, "Levels", "", true, Lavender, White, 0, -34)
-  Levels1Button = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Super", "0%", false, Green, White, 0, -23, function() mainmenu:startLevel(1) end, function() end)
-  Levels2Button = newSquareButton(gw / 2+130, gh / 2 - 85, 150, "Hyper", "20%", false, Blue, White, 0, -23, function() mainmenu:startLevel(2) end, function() end)
-  Levels3Button = newSquareButton(gw / 2+360, gh / 2 + 85, 150, "Ultra", "12%", false, Red, White, 0, -23, function() mainmenu:startLevel(3) end, function() end)
-  Levels4Button = newSquareButton(gw / 2+590, gh / 2 - 85, 150, "Extreme", "100%", false, Purple, White, 0, -23, function() mainmenu:startLevel(4) end, function() end)
+  Levels1Button = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Super", savemanager.highscores.levelScore[1] .. "%", false, Green, White, 0, -23, function() mainmenu:startLevel(1) end, function() end)
+  Levels2Button = newSquareButton(gw / 2+130, gh / 2 - 85, 150, "Hyper", savemanager.highscores.levelScore[2] .. "%", false, Blue, White, 0, -23, function() mainmenu:startLevel(2) end, function() end)
+  Levels3Button = newSquareButton(gw / 2+360, gh / 2 + 85, 150, "Ultra", savemanager.highscores.levelScore[3] .. "%", false, Red, White, 0, -23, function() mainmenu:startLevel(3) end, function() end)
+  Levels4Button = newSquareButton(gw / 2+590, gh / 2 - 85, 150, "Extreme", savemanager.highscores.levelScore[4] .. "%", false, Purple, White, 0, -23, function() mainmenu:startLevel(4) end, function() end)
 
   buttonhover = audio:newSource("assets/buttonhover.wav", "stream")
   buttonhover:setVolume(volumeValue * 0.001)
@@ -50,10 +49,11 @@ function mainmenu:load()
   menumusic:play()
 end
 
-function mainmenu:startLevel(levelIndex)
+function mainmenu:startLevel(index)
   menumusic:stop()
   menuparticles:clearParticles()
   statemanager:changeState("game")
+  maingame:loadLevel(index)
 end
 
 function mainmenu:saveSettings()
@@ -146,34 +146,13 @@ function mainmenu:gamepadpressed(joystick, button)
 end
 
 function mainmenu:keypressed(key)
-  if (menuState == "main") then
-    if (key == "return") then
-      if (menuSelected == 1) then
-        menuState = "levels"
-        menuSelected = 1
-      elseif (menuSelected == 2) then
-        menuState = "options"
-        menuSelected = 1
-      elseif (menuSelected == 3) then
-        love.event.quit(0)
-      end
-    end
-  elseif (menuState == "options") then
+  if (menuState == "options") then
     if (key == "escape") then
       menuState = "main"
-      menuSelected = 1
-    elseif (key == "return") then
-        if (menuSelected == 3) then
-          menuState = "main"
-          menuSelected = 1
-        end
     end
   elseif (menuState == "levels") then
     if (key == "escape") then
       menuState = "main"
-      menuSelected = 1
-    elseif (key == "return") then
-      mainmenu:startLevel(menuSelected)
     end
   end
 end
