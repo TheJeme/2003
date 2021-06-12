@@ -8,15 +8,15 @@ function createCircle(pos, speed)
   c.x = 0
   c.y = 0
   if (pos > 0) then
-    c.pos = 50+50*pos
-    c.r = 9 / 255
-    c.g = 132 / 255
-    c.b = 227 / 255
-  else
-    c.pos = -50+50*pos
+    c.pos = 150+50*pos
     c.r = 255 / 255
     c.g = 118 / 255
     c.b = 117 / 255
+  else
+    c.pos = -150+50*pos
+    c.r = 9 / 255
+    c.g = 132 / 255
+    c.b = 227 / 255
   end
   c.speed = speed
   c.angle = 0
@@ -29,9 +29,9 @@ function circle:update(dt)
     v.angle = v.angle + (v.speed / v.pos * dt)
     v.x = gw/2+math.cos(v.angle)*v.pos
     v.y = gh/2+math.sin(v.angle)*v.pos
-    if (math.abs(v.angle) > math.pi*1.02) then
+    if (math.abs(v.angle) > math.pi*1.06) then
       table.remove(listOfCircles, i)
-      maingame:fail()
+      --maingame:fail()
     end
     table.insert(v.circletrail, circletrail:new(v.x, v.y, v.r, v.g, v.b))
     for i = #v.circletrail, 1, -1 do

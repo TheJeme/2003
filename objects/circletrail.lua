@@ -14,8 +14,8 @@ function circletrail:new(x, y, r, g, b)
 end
 
 function circletrail:update(dt)
-	self.size = self.size - 5 * dt
-	self.alpha = self.alpha - 11 * dt
+	self.size = self.size - 1 * dt
+	self.alpha = self.alpha - 6 * dt
 end
 
 function circletrail:draw()

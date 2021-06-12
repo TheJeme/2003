@@ -35,6 +35,14 @@ function button:isMouseOnButton(mx, my, ox, oy, r)
   return dist <= (1 + r)^2
 end
 
+function button:setMainText(text)
+  self.text = text
+end
+
+function button:setAltText(altText)
+  self.altText = altText
+end
+
 function button:draw()
   love.graphics.setLineWidth(30)
   love.graphics.setColor(self.outlineColor)

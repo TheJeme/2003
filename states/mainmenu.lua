@@ -182,9 +182,9 @@ function mainmenu:changeResolution(value)
     resolutionIndex = 1
   end
   if (resolutionIndex == 8) then
-    optionsResolutionButton = newButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", "Fullscreen", false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
+    optionsResolutionButton:setAltText("Fullscreen")
   else
-    optionsResolutionButton = newButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", resolutionList[resolutionIndex][1] .." x " .. resolutionList[resolutionIndex][2], false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
+    optionsResolutionButton:setAltText(resolutionList[resolutionIndex][1] .." x " .. resolutionList[resolutionIndex][2])
   end
 end
 
@@ -195,7 +195,7 @@ function mainmenu:changeVolume(value)
   elseif (volumeValue > 200) then
     volumeValue = 0
   end
-  optionsVolumeButton = newButton(gw / 2+130, gh / 2 - 85, 150, "Volume", volumeValue .. "%", false, Blue, White, 0, -23, function() mainmenu:changeVolume(5) end, function() mainmenu:changeVolume(-5) end)
+  optionsVolumeButton:setAltText(volumeValue .. "%")
   menumusic:setVolume(volumeValue * 0.001)
   buttonhover:setVolume(volumeValue * 0.001)
   buttonhit:setVolume(volumeValue * 0.001)
