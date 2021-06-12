@@ -3,6 +3,8 @@ require 'lib/simpleScale'
 require 'globals'
 require 'colors'
 
+require 'objects/cursor'
+
 require 'managers/statemanager'
 require 'managers/savemanager'
 
@@ -11,6 +13,7 @@ local appId = require 'applicationId'
 
 function love.load()
   savemanager:load()
+  cursor:load()
   volumeValue = savemanager.settings.volume or 100
   resolutionIndex = savemanager.settings.resolutionIndex or 8
   statemanager:load()
@@ -20,7 +23,10 @@ function love.load()
     isFullScreen = false
   end
   simpleScale.setWindow(gw, gh, resolutionList[resolutionIndex][1], resolutionList[resolutionIndex][2], {fullscreen = isFullScreen})
+  mx = love.mouse.getX() / simpleScale.getScale()
+  my = love.mouse.getY() / simpleScale.getScale()
   love.window.setVSync(0)
+  love.mouse.setVisible(false)
   joystick = nil
 
   discordRPC.initialize(appId, true)

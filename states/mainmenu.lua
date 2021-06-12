@@ -9,10 +9,9 @@ mainmenu = {}
 
 local mainLogoButton, mainPlayButton, mainOptionsButton, mainExitButton
 local optionsLogoButton, optionsResolutionButton, optionsVolumeButton, optionsBackButton
-local levelsLogoButton, Levels1Button, Levels2Button, Levels3Button, Levels4Button
+local levelsLogoButton
 
-local menuState
-local menuBG
+local menuState, menuBG
 
 function mainmenu:load()
   menuState = "main"
@@ -111,6 +110,7 @@ function mainmenu:draw()
     Levels3Button:draw()
     Levels4Button:draw()
   end
+  cursor:draw()
 end
 
 function mainmenu:mousepressed(x, y, button)
