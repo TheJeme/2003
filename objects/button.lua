@@ -1,23 +1,26 @@
 local button = {}
 button.__index = button
 
-function newButton(x, y, width, height, func, func2)
-  local b = {}
-  b.x = x
-  b.y = y
-  b.width = width
-  b.height = height
-  b.func = func
-  b.func2 = func2 or function() end
-  b.hover = false
-  
-  return setmetatable(b, button)
+function newButton(x, y, radius, text, altText, isLogo, inlineColor, outlineColor, ox, oy, func1, func2)
+  local s = {}
+  s.x = x
+  s.y = y
+  s.radius = radius
+  s.text = text
+  s.altText = altText
+  s.isLogo = isLogo
+  s.inlineColor = inlineColor
+  s.outlineColor = outlineColor
+  s.ox = ox or 0
+  s.oy = oy or 0
+  s.func1 = func1
+  s.func2 = func2
+
+  return setmetatable(s, button)
 end
 
-function button:update(dt)    
-  self.isMouseOnButton = cursorMX > self.x and cursorMX < self.x + self.width and
-                          cursorMY > self.y and cursorMY < self.y + self.height                                       
-  if self.isMouseOnButton then
+function button:update(dt)
+  if button:isMouseOnButton(mx, my, self.x, self.y, self.radius*0.9) then
     if (self.hover == false) then
       self.hover = true
       buttonhover:play()
@@ -27,24 +30,39 @@ function button:update(dt)
   end
 end
 
-function button:mousepressed(x, y, button)
-  if self.isMouseOnButton and (button == 1) then
-    self.func()
-    buttonhit:play()
-  elseif self.isMouseOnButton and button == 2 then
-    self.func2()
-    buttonhit:play()
-  end
+function button:isMouseOnButton(mx, my, ox, oy, r)
+  local dist = (mx - ox)^2 + (my - oy)^2
+  return dist <= (1 + r)^2
 end
 
-function button:gamepadpressed(joystick, button)
-  if self.isMouseOnButton and button == "a" then
-    self.func()
-  elseif self.isMouseOnButton and button == "x" then
-    self.func2()
+function button:draw()
+  love.graphics.setLineWidth(30)
+  love.graphics.setColor(self.outlineColor)
+  love.graphics.circle("line", self.x, self.y, self.radius, 4)
+  love.graphics.setColor(self.inlineColor)
+  love.graphics.circle("fill", self.x, self.y, self.radius, 4)
+  if (button:isMouseOnButton(mx, my, self.x, self.y, self.radius*0.9) and not self.isLogo) then
+    love.graphics.setColor(0.1, 0.1, 0.1, 0.1)
+    love.graphics.circle("fill", self.x, self.y, self.radius, 4)
   end
+  love.graphics.setColor(1, 1, 1, 1)
+  if (self.isLogo) then
+    love.graphics.setFont(logoFont)
+  else
+    love.graphics.setFont(titleFont)
+  end
+  love.graphics.printf(self.text, self.x - self.radius + self.ox, self.y + self.oy, self.radius * 2, "center")
+  love.graphics.setFont(altTitleFont)
+  love.graphics.printf(self.altText, self.x - self.radius + self.ox, self.y + self.oy + 50, self.radius * 2, "center")
 end
 
-function button:getHoverState()
-  return self.hover
+function button:mousepressed(x, y, b)
+  if button:isMouseOnButton(mx, my, self.x, self.y, self.radius*0.9) then
+    if (b == 1) then
+      self.func1()
+    elseif (b == 2) then
+      self.func2()
+    end
+    buttonhit:play()
+  end
 end

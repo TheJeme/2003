@@ -1,11 +1,15 @@
 require 'objects/button'
-require 'objects/squareButton'
-local menuparticles = require 'objects/menuparticles'
+require 'objects/button'
 
+local menuparticles = require 'objects/menuparticles'
 
 local audio = require "lib/wave"
 
 mainmenu = {}
+
+local mainLogoButton, mainPlayButton, mainOptionsButton, mainExitButton
+local optionsLogoButton, optionsResolutionButton, optionsVolumeButton, optionsBackButton
+local levelsLogoButton, Levels1Button, Levels2Button, Levels3Button, Levels4Button
 
 local menuState
 local menuBG
@@ -14,33 +18,31 @@ function mainmenu:load()
   menuState = "main"
   menuBG = love.graphics.newImage("assets/menubg.jpg")
 
-  mainLogoButton = newSquareButton(gw / 2-330-15, gh / 2 - 130, 180, "2003", "", true, Lavender, White, 0, -34)
-  mainPlayButton = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Play", "", false, Green, White, 0, -23, function() menuState = "levels" end, function() end)
-  mainOptionsButton = newSquareButton(gw / 2+130, gh / 2 - 85, 150, "Options", "", false, Blue, White, 0, -23, function() menuState = "options" end, function() end)
-  mainExitButton = newSquareButton(gw / 2+360, gh / 2 + 85, 150, "Exit", "", false, Red, White, 0, -23, function() love.event.quit(0) end, function() end)
+  mainLogoButton = newButton(gw / 2-330-15, gh / 2 - 130, 180, "2003", "", true, Lavender, White, 0, -34)
+  mainPlayButton = newButton(gw / 2-100, gh / 2 + 85, 150, "Play", "", false, Green, White, 0, -23, function() menuState = "levels" end, function() menuState = "levels" end)
+  mainOptionsButton = newButton(gw / 2+130, gh / 2 - 85, 150, "Options", "", false, Blue, White, 0, -23, function() menuState = "options" end, function() menuState = "options" end)
+  mainExitButton = newButton(gw / 2+360, gh / 2 + 85, 150, "Exit", "", false, Red, White, 0, -23, function() love.event.quit(0) end, function() love.event.quit(0) end)
 
-  optionsLogoButton = newSquareButton(gw / 2-330-15, gh / 2 - 130, 180, "Options", "", true, Lavender, White, 0, -34)
+  optionsLogoButton = newButton(gw / 2-330-15, gh / 2 - 130, 180, "Options", "", true, Lavender, White, 0, -34)
   if (resolutionIndex == 8) then
-    optionsResolutionButton = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", "Fullscreen", false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
+    optionsResolutionButton = newButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", "Fullscreen", false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
   else
-    optionsResolutionButton = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", resolutionList[resolutionIndex][1] .." x " .. resolutionList[resolutionIndex][2], false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
+    optionsResolutionButton = newButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", resolutionList[resolutionIndex][1] .." x " .. resolutionList[resolutionIndex][2], false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
   end
-  optionsVolumeButton = newSquareButton(gw / 2+130, gh / 2 - 85, 150, "Volume", volumeValue .. "%", false, Blue, White, 0, -23, function() mainmenu:changeVolume(5) end, function() mainmenu:changeVolume(-5) end)
-  optionsBackButton = newSquareButton(gw / 2+360, gh / 2 + 85, 150, "Back", "", false, Red, White, 0, -23, function() mainmenu:saveSettings() menuState = "main" end, function() end)
+  optionsVolumeButton = newButton(gw / 2+130, gh / 2 - 85, 150, "Volume", volumeValue .. "%", false, Blue, White, 0, -23, function() mainmenu:changeVolume(5) end, function() mainmenu:changeVolume(-5) end)
+  optionsBackButton = newButton(gw / 2+360, gh / 2 + 85, 150, "Back", "", false, Red, White, 0, -23, function() mainmenu:saveSettings() menuState = "main" end, function() mainmenu:saveSettings() menuState = "main" end)
 
-  levelsLogoButton = newSquareButton(gw / 2-330-15, gh / 2 - 130, 180, "Levels", "", true, Lavender, White, 0, -34)
-  Levels1Button = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Super", savemanager.highscores.levelScore[1] .. "%", false, Green, White, 0, -23, function() mainmenu:startLevel(1) end, function() end)
-  Levels2Button = newSquareButton(gw / 2+130, gh / 2 - 85, 150, "Hyper", savemanager.highscores.levelScore[2] .. "%", false, Blue, White, 0, -23, function() mainmenu:startLevel(2) end, function() end)
-  Levels3Button = newSquareButton(gw / 2+360, gh / 2 + 85, 150, "Ultra", savemanager.highscores.levelScore[3] .. "%", false, Red, White, 0, -23, function() mainmenu:startLevel(3) end, function() end)
-  Levels4Button = newSquareButton(gw / 2+590, gh / 2 - 85, 150, "Extreme", savemanager.highscores.levelScore[4] .. "%", false, Purple, White, 0, -23, function() mainmenu:startLevel(4) end, function() end)
+  levelsLogoButton = newButton(gw / 2-330-15, gh / 2 - 130, 180, "Levels", "", true, Lavender, White, 0, -34)
+  Levels1Button = newButton(gw / 2-100, gh / 2 + 85, 150, "Super", savemanager.highscores.levelScore[1] .. "%", false, Green, White, 0, -23, function() mainmenu:startLevel(1) end, function() mainmenu:startLevel(1) end)
+  Levels2Button = newButton(gw / 2+130, gh / 2 - 85, 150, "Hyper", savemanager.highscores.levelScore[2] .. "%", false, Blue, White, 0, -23, function() mainmenu:startLevel(2) end, function() mainmenu:startLevel(2) end)
+  Levels3Button = newButton(gw / 2+360, gh / 2 + 85, 150, "Ultra", savemanager.highscores.levelScore[3] .. "%", false, Red, White, 0, -23, function() mainmenu:startLevel(3) end, function() mainmenu:startLevel(3) end)
+  Levels4Button = newButton(gw / 2+590, gh / 2 - 85, 150, "Extreme", savemanager.highscores.levelScore[4] .. "%", false, Purple, White, 0, -23, function() mainmenu:startLevel(4) end, function() mainmenu:startLevel(4) end)
 
   buttonhover = audio:newSource("assets/buttonhover.wav", "stream")
   buttonhover:setVolume(volumeValue * 0.001)
-  buttonhover:setLooping(false)
 
-  buttonhit = audio:newSource("assets/buttonhit2.wav", "stream")
+  buttonhit = audio:newSource("assets/buttonhit.wav", "stream")
   buttonhit:setVolume(volumeValue * 0.001)
-  buttonhit:setLooping(false)
 
   menumusic = audio:newSource("songs/OcularNebula - Pulsar.mp3", "stream")
   menumusic:parse()
@@ -71,6 +73,20 @@ end
 
 function mainmenu:update(dt)
   menuparticles:update(dt)
+  if (menuState == "main") then
+    mainPlayButton:update(dt)
+    mainOptionsButton:update(dt)
+    mainExitButton:update(dt)
+  elseif (menuState == "options") then
+    optionsResolutionButton:update(dt)
+    optionsVolumeButton:update(dt)
+    optionsBackButton:update(dt)
+  elseif (menuState == "levels") then
+    Levels1Button:update(dt)
+    Levels2Button:update(dt)
+    Levels3Button:update(dt)
+    Levels4Button:update(dt)
+  end
 end
 
 function mainmenu:draw()
@@ -166,9 +182,9 @@ function mainmenu:changeResolution(value)
     resolutionIndex = 1
   end
   if (resolutionIndex == 8) then
-    optionsResolutionButton = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", "Fullscreen", false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
+    optionsResolutionButton = newButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", "Fullscreen", false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
   else
-    optionsResolutionButton = newSquareButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", resolutionList[resolutionIndex][1] .." x " .. resolutionList[resolutionIndex][2], false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
+    optionsResolutionButton = newButton(gw / 2-100, gh / 2 + 85, 150, "Resolution", resolutionList[resolutionIndex][1] .." x " .. resolutionList[resolutionIndex][2], false, Green, White, 0, -23, function() mainmenu:changeResolution(1) end, function() mainmenu:changeResolution(-1) end)
   end
 end
 
@@ -179,8 +195,12 @@ function mainmenu:changeVolume(value)
   elseif (volumeValue > 200) then
     volumeValue = 0
   end
-  optionsVolumeButton = newSquareButton(gw / 2+130, gh / 2 - 85, 150, "Volume", volumeValue .. "%", false, Blue, White, 0, -23, function() mainmenu:changeVolume(5) end, function() mainmenu:changeVolume(-5) end)
+  optionsVolumeButton = newButton(gw / 2+130, gh / 2 - 85, 150, "Volume", volumeValue .. "%", false, Blue, White, 0, -23, function() mainmenu:changeVolume(5) end, function() mainmenu:changeVolume(-5) end)
   menumusic:setVolume(volumeValue * 0.001)
+  buttonhover:setVolume(volumeValue * 0.001)
+  buttonhit:setVolume(volumeValue * 0.001)
+  circlehitsound:setVolume(volumeValue * 0.001)
+  failsound:setVolume(volumeValue * 0.001)
 end
 
 return mainmenu
