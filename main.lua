@@ -25,14 +25,12 @@ function love.load()
 
   discordRPC.initialize(appId, true)
   now = os.time(os.date("*t"))
-  detailsNow = "In Mainmenu"
-  stateNow = ""
   nextPresenceUpdate = 0
 end
 
 function discordApplyPresence()
   if statemanager:getState() == "game" then
-    detailsNow = "Playing " .. maingame:getSong()
+    detailsNow = "Playing: " .. maingame:getLevelName()
   else
     detailsNow = "In Mainmenu"
   end

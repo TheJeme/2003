@@ -1,5 +1,10 @@
-require 'managers/levelmanager'
 require 'objects/circle'
+
+require 'levels/level01'
+require 'levels/level02'
+require 'levels/level03'
+require 'levels/level04'
+
 local audio = require "lib/wave"
 
 maingame = {}
@@ -14,7 +19,7 @@ levelBGs = {love.graphics.newImage("assets/level1bg.jpg"),
               love.graphics.newImage("assets/level3bg.jpg"),
               love.graphics.newImage("assets/level4bg.jpg")}
 
-local levelIndex, timer, nextNote, endTime, mapNotes, isPause, isFailed
+local levelIndex, timer, nextNote, endTime, levelNotes, isPause, isFailed
 
 function maingame:load()
   pauseLogoButton = newButton(gw / 2-330-15, gh / 2 - 130, 180, "Paused", "", true, Lavender, White, 0, -34)
@@ -40,16 +45,14 @@ function maingame:update(dt)
     pauseQuitButton:update(dt)
   elseif not isPause and not isFailed then
     timer = timer + dt
-    for i, v in ipairs(mapNotes) do
-      if (#mapNotes >= nextNote and (mapNotes[nextNote][5] - 400) * 0.001 < timer) then
-        if (mapNotes[nextNote][4] == 0) then
-          createCircle(mapNotes[nextNote][1], mapNotes[nextNote][2])
-        end
+    for i, v in ipairs(levelNotes) do
+      if (#levelNotes >= nextNote and (levelNotes[nextNote][3] - 400) * 0.001 < timer) then
+        createCircle(levelNotes[nextNote][1], levelNotes[nextNote][2])
         nextNote = nextNote + 1
       end
     end
-    if (timer2 > 0.2) then
-      createCircle(5, 600)
+    if (timer2 < 1) then
+      createCircle(8, 700)
       timer2 = 0
     else
       timer2 = timer2 + dt
@@ -120,7 +123,7 @@ function maingame:progressBar()
   love.graphics.setColor(0.3, 0.3, 0.3, 1)
   love.graphics.rectangle("fill", 0, gh-10, gw, 10)
   love.graphics.setColor(0.95, 0.95, 0.95, 1)
-  love.graphics.rectangle("fill", 0, gh-10, gw*(timer/maingame:getSongLength()), 10)
+  love.graphics.rectangle("fill", 0, gh-10, gw*(timer/maingame:getLevelLength()), 10)
 end
 
 function maingame:gamepadpressed(joystick, button)
@@ -134,17 +137,23 @@ function maingame:gamepadpressed(joystick, button)
 end
 
 function maingame:keypressed(key)
-  if (key == "escape") then
-    maingame:pause()
-  elseif (key == "d" or key == "f") then
-    if (math.abs(listOfCircles[1].angle) > math.pi*0.90 and math.abs(listOfCircles[1].angle) < math.pi*1.10 and listOfCircles[1].pos > 0) then
-      table.remove(listOfCircles, 1)
-      circlehitsound:play()
-    end
-  elseif (key == "j" or key == "k") then
-    if (math.abs(listOfCircles[1].angle) > math.pi*0.90 and math.abs(listOfCircles[1].angle) < math.pi*1.10 and listOfCircles[1].pos < 0) then
-      table.remove(listOfCircles, 1)
-      circlehitsound:play()
+  if not isFailed and not isPaused then
+    if (key == "escape") then
+      maingame:pause()
+    elseif (key == "d" or key == "f") then
+      if (math.abs(listOfCircles[1].angle) > math.pi*0.98 and math.abs(listOfCircles[1].angle) < math.pi*1.02 and listOfCircles[1].pos > 0) then
+        table.remove(listOfCircles, 1)
+        circlehitsound:play()
+      elseif (math.abs(listOfCircles[1].angle) > math.pi*0.90 and math.abs(listOfCircles[1].angle) < math.pi*0.98) then
+        maingame:fail()
+      end
+    elseif (key == "j" or key == "k") then
+      if (math.abs(listOfCircles[1].angle) > math.pi*0.98 and math.abs(listOfCircles[1].angle) < math.pi*1.02 and listOfCircles[1].pos < 0) then
+        table.remove(listOfCircles, 1)
+        circlehitsound:play()
+      elseif (math.abs(listOfCircles[1].angle) > math.pi*0.90 and math.abs(listOfCircles[1].angle) < math.pi*0.98) then
+        maingame:fail()
+      end
     end
   end
 end
@@ -178,13 +187,9 @@ function maingame:restart()
   isFailed = false
   nextNote = 1
   endTime = 0
-  --for i, v in ipairs(mapNotes) do
-  --  listOfCircles = {}
-  --end
-  mapNotes = {}
+  listOfCircles = {}
   gamemusic:play()
-  --mapNotes = mapManager.getNotesOfIndex(mapList.getSelectedMapIndex())
-  --levelmanager:loadLevel(levelIndex)
+  levelNotes = maingame:getMapNotes()
 end
 
 function maingame:endLevel()
@@ -193,8 +198,19 @@ function maingame:endLevel()
   menumusic:play()
 end
 
+function maingame:getMapNotes()
+  if (levelIndex == 1) then
+    return level01:hitcircles()
+  elseif (levelIndex == 2) then
+    return level02:hitcircles()
+  elseif (levelIndex == 3) then
+    return level03:hitcircles()
+  elseif (levelIndex == 4) then
+    return level04:hitcircles()
+  end
+end
 
-function maingame:getSong()
+function maingame:getLevelName()
   if (levelIndex == 1) then
     return "Super"
   elseif (levelIndex == 2) then
@@ -206,7 +222,7 @@ function maingame:getSong()
   end
 end
 
-function maingame:getSongLength()
+function maingame:getLevelLength()
   if (levelIndex == 1) then
     return 263
   elseif (levelIndex == 2) then
