@@ -14,7 +14,7 @@ levelBGs = {love.graphics.newImage("assets/level1bg.jpg"),
               love.graphics.newImage("assets/level3bg.jpg"),
               love.graphics.newImage("assets/level4bg.jpg")}
 
-local levelIndex, timer, notesPassed, isPause, isFailed
+local levelIndex, timer, notesPassed, isPause, isFailed, isWin
 
 function maingame:load()
   pauseLogoButton = newButton(gw / 2-330-15, gh / 2 - 130, 180, "Paused", "", true, Lavender, White, 0, -34)
@@ -31,61 +31,80 @@ function maingame:load()
 end
 
 function maingame:update(dt)
-  if isPause then
+  if isWin then
+    pauseRestartButton:update(dt)
+    pauseQuitButton:update(dt)
+  elseif isPause then
     pauseContinueButton:update(dt)
     pauseRestartButton:update(dt)
     pauseQuitButton:update(dt)
   elseif isFailed then
     pauseRestartButton:update(dt)
     pauseQuitButton:update(dt)
-  elseif not isPause and not isFailed then
+  elseif not isPause and not isFailed and not isWin then
     timer = timer + dt
-
-    if (#listOfCircles == 0) then
+    if timer/maingame:getLevelLength() > 1 then
+      maingame:win()
+    elseif (#listOfCircles == 0) then
       local x, x1, x2
       local speed
       if (levelIndex == 1) then
         if (notesPassed%2==0) then
-          x = math.random(1,6)
-          speed = math.random(1000,1000)
+          x = math.random(2,5)
+          speed = 1000
         else
-          x = math.random(-6,-1)
-          speed = math.random(-1000,-1000)
+          x = math.random(-5,-2)
+          speed = -1000
         end
         createCircle(x, speed)
       elseif (levelIndex == 2) then
         if (math.random() < 0.5) then
-          x = math.random(1,6)
-          speed = math.random(1200,1200)
+          x = math.random(2,5)
+          speed = 1200
         else
-          x = math.random(-6,-1)
-          speed = math.random(-1200,-1200)
+          x = math.random(-5,-2)
+          speed = -1200
         end
-        createCircle(x, speed)
+        createCircle(-x, speed)
       elseif (levelIndex == 3) then
-        x = math.random(1,6)
-        x1 = math.random(0,1)
-        x2 = math.random(0,1)
+        x = math.random(2,5)
+        x1 = math.random(0,2)
         if (x1 == 0) then
           x = x*-1
         end
-        createCircle(x, math.random(-1300,-1300))
+        createCircle(x, -1300)
       elseif (levelIndex == 4) then
-        x = math.random(1,6)
+        x = math.random(3,6)
         x1 = math.random(0,1)
         x2 = math.random(0,1)
         if (x1 == 0) then
           x = x*-1
         end
         if (x2 == 0) then
-          createCircle(x, math.random(1200,1600))
+          createCircle(x, 1900)
         else
-          createCircle(x, math.random(-1600,-1200))
+          createCircle(x, -1900)
         end
       end
     end
-
     circle:update(dt)
+  end
+end
+
+function maingame:win()
+  isWin = true
+  listOfCircles = {}
+  pauseProgressButton:setAltText("Level Complete!")
+  savemanager.highscores.levelScore[levelIndex] = 100
+  savemanager:saveHighscores()
+  if (levelIndex == 1) then
+    Levels1Button:setAltText("100%")
+  elseif (levelIndex == 2) then
+    Levels2Button:setAltText("100%")
+  elseif (levelIndex == 3) then
+    Levels3Button:setAltText("100%")
+  elseif (levelIndex == 4) then
+    Levels4Button:setAltText("100%")
   end
 end
 
@@ -93,7 +112,10 @@ function maingame:draw()
   maingame:LayoutUI()
   circle:draw()
   maingame:progressBar()
-  if isFailed then
+  if isWin then
+    maingame:winScreen()
+    cursor:draw()
+  elseif isFailed then
     maingame:failedScreen()
     cursor:draw()
   elseif isPause then
@@ -120,7 +142,30 @@ function maingame:LayoutUI()
 end
 
 function maingame:mousepressed(x, y, button)
-  if isFailed then
+  if not isFailed and not isPause and not isWin then
+    if (#listOfCircles > 0) then
+      if (button == 1) then
+        if (math.abs(listOfCircles[1].angle) > math.pi*0.93 and math.abs(listOfCircles[1].angle) < math.pi*1.07 and listOfCircles[1].pos > 0) then
+          table.remove(listOfCircles, 1)
+          notesPassed = notesPassed + 1
+          circlehitsound:play()
+        elseif (math.abs(listOfCircles[1].angle) > math.pi*0.84 and math.abs(listOfCircles[1].angle) < math.pi*0.93) then
+          maingame:fail()
+        end
+      elseif (button == 2) then
+        if (math.abs(listOfCircles[1].angle) > math.pi*0.93 and math.abs(listOfCircles[1].angle) < math.pi*1.07 and listOfCircles[1].pos < 0) then
+          table.remove(listOfCircles, 1)
+          notesPassed = notesPassed + 1
+          circlehitsound:play()
+        elseif (math.abs(listOfCircles[1].angle) > math.pi*0.84 and math.abs(listOfCircles[1].angle) < math.pi*0.93) then
+          maingame:fail()
+        end
+      end
+    end
+  elseif isWin then
+    pauseRestartButton:mousepressed(x, y, button)
+    pauseQuitButton:mousepressed(x, y, button)
+  elseif isFailed then
     pauseRestartButton:mousepressed(x, y, button)
     pauseQuitButton:mousepressed(x, y, button)
   elseif isPause then
@@ -149,6 +194,16 @@ function maingame:failedScreen()
   pauseQuitButton:draw()
 end
 
+function maingame:winScreen()
+  love.graphics.setColor(0, 0, 0, 0.55)
+  love.graphics.rectangle('fill', 0, 0, gw, gh)
+  pauseProgressButton:setMainText(math.floor(timer/maingame:getLevelLength()*100) .. "%")
+  pauseLogoButton:draw()
+  pauseProgressButton:draw()
+  pauseRestartButton:draw()
+  pauseQuitButton:draw()
+end
+
 function maingame:progressBar()
   love.graphics.setColor(0.3, 0.3, 0.3, 1)
   love.graphics.rectangle("fill", 0, gh-10, gw, 10)
@@ -156,21 +211,11 @@ function maingame:progressBar()
   love.graphics.rectangle("fill", 0, gh-10, gw*(timer/maingame:getLevelLength()), 10)
 end
 
-function maingame:gamepadpressed(joystick, button)
-  if (button == "start" or button == "back") then
-    maingame:pause()
-  end
-  if (isPause) then
-    restartButton:gamepadpressed(joystick, button)
-    exitButton:gamepadpressed(joystick, button)
-  end
-end
-
 function maingame:keypressed(key)
   if key == "r" and (isFailed or isPause) then
     maingame:restart()
   end
-  if not isFailed then
+  if not isFailed and not isWin then
     if (key == "escape") then
       maingame:pause()
     end
@@ -180,7 +225,7 @@ function maingame:keypressed(key)
           table.remove(listOfCircles, 1)
           notesPassed = notesPassed + 1
           circlehitsound:play()
-        elseif (math.abs(listOfCircles[1].angle) > math.pi*0.87 and math.abs(listOfCircles[1].angle) < math.pi*0.93) then
+        elseif (math.abs(listOfCircles[1].angle) > math.pi*0.84 and math.abs(listOfCircles[1].angle) < math.pi*0.93) then
           maingame:fail()
         end
       elseif (key == "j" or key == "k") then
@@ -188,7 +233,7 @@ function maingame:keypressed(key)
           table.remove(listOfCircles, 1)
           notesPassed = notesPassed + 1
           circlehitsound:play()
-        elseif (math.abs(listOfCircles[1].angle) > math.pi*0.87 and math.abs(listOfCircles[1].angle) < math.pi*0.93) then
+        elseif (math.abs(listOfCircles[1].angle) > math.pi*0.84 and math.abs(listOfCircles[1].angle) < math.pi*0.93) then
           maingame:fail()
         end
       end
@@ -215,6 +260,10 @@ function maingame:pause()
 end
 
 function maingame:fail()
+
+end
+
+function maingame:fails()
   isFailed = true
   gamemusic:stop()
   failsound:play()
@@ -240,6 +289,7 @@ function maingame:restart()
   timer = 0
   isPause = false
   isFailed = false
+  isWin = false
   nextNote = 1
   notesPassed = 0
   endTime = 0

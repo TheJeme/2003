@@ -35,14 +35,6 @@ function statemanager:mousepressed(x, y, button)
   end
 end
 
-function statemanager:gamepadpressed(joystick, button)
-  if (currentState == "menu") then
-    mainmenu:gamepadpressed(joystick, button)
-  elseif (currentState == "game") then
-    maingame:gamepadpressed(joystick, button)
-  end
-end
-
 function statemanager:keypressed(key)
   if (currentState == "menu") then
     mainmenu:keypressed(key)

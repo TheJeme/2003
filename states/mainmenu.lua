@@ -130,37 +130,6 @@ function mainmenu:mousepressed(x, y, button)
   end
 end
 
-function mainmenu:gamepadpressed(joystick, button)
-  if (button == "start" or button == "back" or button == "b") then
-    if (menuState == "main") then
-      menuState = "quit"
-    elseif (menuState == "options") then
-      menuState = "main"
-    elseif (menuState == "levels") then
-      menuState = "main"
-    end
-  end
-  if (menuState == "main") then
-    playButton:gamepadpressed(joystick, button)
-    optionsButton:gamepadpressed(joystick, button)
-    quitButton:gamepadpressed(joystick, button)
-  elseif (menuState == "options") then
-    if (joystick ~= nil) then
-      optionsJoystickButton:gamepadpressed(joystick, button)
-    end
-    optionsResolutionButton:gamepadpressed(joystick, button)
-    optionsVolumeButton:gamepadpressed(joystick, button)
-    optionsBackButton:gamepadpressed(joystick, button)
-  elseif (menuState == "levels") then
-    level1Button:gamepadpressed(joystick, button)
-    level2Button:gamepadpressed(joystick, button)
-    level3Button:gamepadpressed(joystick, button)
-    level4Button:gamepadpressed(joystick, button)
-    level5Button:gamepadpressed(joystick, button)
-    levelBackButton:gamepadpressed(joystick, button)
-  end
-end
-
 function mainmenu:keypressed(key)
   if (menuState == "options") then
     if (key == "escape") then
