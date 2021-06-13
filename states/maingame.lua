@@ -260,10 +260,6 @@ function maingame:pause()
 end
 
 function maingame:fail()
-
-end
-
-function maingame:fails()
   isFailed = true
   gamemusic:stop()
   failsound:play()
