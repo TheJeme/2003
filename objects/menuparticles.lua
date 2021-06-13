@@ -33,7 +33,7 @@ end
 
 function menuparticles:draw()
   for _, v in ipairs(listOfMenuParticles) do
-    love.graphics.setColor(100 / 255, 42 / 255, 51 / 255, v.colorA / 1000)
+    love.graphics.setColor(35 / 255, 54 / 255, 105 / 255, v.colorA / 1000)
     love.graphics.circle("fill", v.x, v.y, v.radius, 4)
   end
 end

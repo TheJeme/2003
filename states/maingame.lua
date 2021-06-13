@@ -4,19 +4,19 @@ local audio = require "lib/wave"
 
 maingame = {}
 
-levelSongs = {love.audio.newSource("songs/DJ Okawari - Flower Dance.mp3", "stream"),
-              love.audio.newSource("songs/Goukisan - Betrayal Of Fate.mp3", "stream"),
-              love.audio.newSource("songs/Goukisan - Betrayal Of Fear.mp3", "stream"),
-              love.audio.newSource("songs/kors k - Erehamonika.mp3", "stream")}
-
-levelBGs = {love.graphics.newImage("assets/level1bg.jpg"),
-              love.graphics.newImage("assets/level2bg.jpg"),
-              love.graphics.newImage("assets/level3bg.jpg"),
-              love.graphics.newImage("assets/level4bg.jpg")}
-
 local levelIndex, timer, notesPassed, isPause, isFailed, isWin
 
 function maingame:load()
+  levelSongs = {love.audio.newSource("songs/DJ Okawari - Flower Dance.mp3", "stream"),
+                love.audio.newSource("songs/Goukisan - Betrayal Of Fate.mp3", "stream"),
+                love.audio.newSource("songs/Goukisan - Betrayal Of Fear.mp3", "stream"),
+                love.audio.newSource("songs/kors k - Erehamonika.mp3", "stream")}
+
+  levelBGs = {love.graphics.newImage("assets/level1bg.jpg"),
+                love.graphics.newImage("assets/level2bg.jpg"),
+                love.graphics.newImage("assets/level3bg.jpg"),
+                love.graphics.newImage("assets/level4bg.jpg")}
+
   pauseLogoButton = newButton(gw / 2-330-15, gh / 2 - 130, 180, "Paused", "", true, Lavender, White, 0, -34)
   pauseContinueButton = newButton(gw / 2-100, gh / 2 + 85, 150, "Continue", "", false, Green, White, 0, -23, function() maingame:pause() end, function() maingame:pause() end)
   pauseProgressButton = newButton(gw / 2-100, gh / 2 + 85, 150, "", "", false, Green, White, 0, -23)
@@ -72,7 +72,7 @@ function maingame:update(dt)
         if (x1 == 0) then
           x = x*-1
         end
-        createCircle(x, -1300)
+        createCircle(x, -1350)
       elseif (levelIndex == 4) then
         x = math.random(3,6)
         x1 = math.random(0,1)
@@ -205,7 +205,7 @@ function maingame:winScreen()
 end
 
 function maingame:progressBar()
-  love.graphics.setColor(0.3, 0.3, 0.3, 1)
+  love.graphics.setColor(0.3, 0.3, 0.3, 0.3)
   love.graphics.rectangle("fill", 0, gh-10, gw, 10)
   love.graphics.setColor(0.95, 0.95, 0.95, 1)
   love.graphics.rectangle("fill", 0, gh-10, gw*(timer/maingame:getLevelLength()), 10)
