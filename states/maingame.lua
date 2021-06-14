@@ -45,45 +45,42 @@ function maingame:update(dt)
     timer = timer + dt
     if timer/maingame:getLevelLength() > 1 then
       maingame:win()
-    elseif (#listOfCircles == 0) then
-      local x, x1, x2
+    elseif (#listOfCircles == 0 and timer > 0.2) then
+      local x
       local speed
       if (levelIndex == 1) then
         if (notesPassed%2==0) then
           x = math.random(2,5)
-          speed = 1000
+          speed = 1150
         else
           x = math.random(-5,-2)
-          speed = -1000
+          speed = -1150
         end
         createCircle(x, speed)
       elseif (levelIndex == 2) then
         if (math.random() < 0.5) then
           x = math.random(2,5)
-          speed = 1200
+          speed = 1250
         else
           x = math.random(-5,-2)
-          speed = -1200
+          speed = -1250
         end
         createCircle(-x, speed)
       elseif (levelIndex == 3) then
         x = math.random(2,5)
-        x1 = math.random(0,2)
-        if (x1 == 0) then
+        if (math.random() < 0.5) then
           x = x*-1
         end
         createCircle(x, -1350)
       elseif (levelIndex == 4) then
-        x = math.random(3,6)
-        x1 = math.random(0,1)
-        x2 = math.random(0,1)
-        if (x1 == 0) then
+        x = math.random(3,5)
+        if (math.random() < 0.5) then
           x = x*-1
         end
-        if (x2 == 0) then
-          createCircle(x, 1900)
+        if (math.random() < 0.5) then
+          createCircle(x, 1850)
         else
-          createCircle(x, -1900)
+          createCircle(x, -1850)
         end
       end
     end
