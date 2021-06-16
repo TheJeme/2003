@@ -49,7 +49,7 @@ function button:draw()
 end
 
 function button:mousepressed(x, y, b)
-  if button:isMouseOnButton(x / simpleScale.getScale()-160, y / simpleScale.getScale(), self.x, self.y, self.radius*0.9) then
+  if button:isMouseOnButton(x / simpleScale.getScale()-170, y / simpleScale.getScale(), self.x, self.y, self.radius*0.9) then
     self.func()
     buttonhit:play()
   end
