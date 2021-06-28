@@ -51,19 +51,19 @@ function maingame:update(dt)
       if (levelIndex == 1) then
         if (notesPassed%2==0) then
           x = math.random(2,5)
-          speed = 1150
+          speed = 1000
         else
           x = math.random(-5,-2)
-          speed = -1150
+          speed = -1000
         end
         createCircle(x, speed)
       elseif (levelIndex == 2) then
         if (math.random() < 0.5) then
           x = math.random(2,5)
-          speed = 1250
+          speed = 1150
         else
           x = math.random(-5,-2)
-          speed = -1250
+          speed = -1150
         end
         createCircle(-x, speed)
       elseif (levelIndex == 3) then
@@ -71,16 +71,16 @@ function maingame:update(dt)
         if (math.random() < 0.5) then
           x = x*-1
         end
-        createCircle(x, -1350)
+        createCircle(x, -1300)
       elseif (levelIndex == 4) then
         x = math.random(3,5)
         if (math.random() < 0.5) then
           x = x*-1
         end
         if (math.random() < 0.5) then
-          createCircle(x, 1850)
+          createCircle(x, 1700)
         else
-          createCircle(x, -1850)
+          createCircle(x, -1700)
         end
       end
     end
@@ -130,12 +130,13 @@ function maingame:LayoutUI()
   love.graphics.setColor(Dark)
   love.graphics.setLineWidth(345)
   love.graphics.circle("line", gw/2, gh/2, 325)
+  love.graphics.setColor(Player1Color)
+  love.graphics.arc("line", "open", gw/2, gh/2, 325, -0.15, 0.15)
+  love.graphics.setColor(Player2Color)
+  love.graphics.arc("line", "open", gw/2, gh/2, 325, -0.15+math.pi, 0.15+math.pi)
   love.graphics.setColor(White)
   love.graphics.setLineWidth(9)
   love.graphics.circle("line", gw/2, gh/2, 500)
-  love.graphics.line(gw/2-500, gh/2, gw/2-150, gh/2)
-  love.graphics.line(gw/2+150, gh/2, gw/2+500, gh/2)
-  love.graphics.setColor(White)
   love.graphics.circle("line", gw/2, gh/2, 150)
 end
 
@@ -218,7 +219,7 @@ function maingame:keypressed(key)
       maingame:pause()
     end
     if (#listOfCircles > 0) then
-      if (key == "d" or key == "f") then
+      if (key == "a" or key == "f") then
         if (math.abs(listOfCircles[1].angle) > math.pi*0.93 and math.abs(listOfCircles[1].angle) < math.pi*1.07 and listOfCircles[1].pos > 0) then
           table.remove(listOfCircles, 1)
           notesPassed = notesPassed + 1
@@ -226,7 +227,7 @@ function maingame:keypressed(key)
         elseif (math.abs(listOfCircles[1].angle) > math.pi*0.84 and math.abs(listOfCircles[1].angle) < math.pi*0.93) then
           maingame:fail()
         end
-      elseif (key == "j" or key == "k") then
+      elseif (key == "d" or key == "j") then
         if (math.abs(listOfCircles[1].angle) > math.pi*0.93 and math.abs(listOfCircles[1].angle) < math.pi*1.07 and listOfCircles[1].pos < 0) then
           table.remove(listOfCircles, 1)
           notesPassed = notesPassed + 1

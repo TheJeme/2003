@@ -41,19 +41,19 @@ function maingame:update(dt)
       if (levelIndex == 1) then
         if (notesPassed%2==0) then
           x = math.random(2,5)
-          speed = 1000
+          speed = 800
         else
           x = math.random(-5,-2)
-          speed = -1000
+          speed = -800
         end
         createCircle(x, speed)
       elseif (levelIndex == 2) then
         if (math.random() < 0.5) then
           x = math.random(2,5)
-          speed = 1100
+          speed = 900
         else
           x = math.random(-5,-2)
-          speed = -1100
+          speed = -900
         end
         createCircle(-x, speed)
       elseif (levelIndex == 3) then
@@ -61,16 +61,16 @@ function maingame:update(dt)
         if (math.random() < 0.5) then
           x = x*-1
         end
-        createCircle(x, -1150)
+        createCircle(x, -1000)
       elseif (levelIndex == 4) then
         x = math.random(3,5)
         if (math.random() < 0.5) then
           x = x*-1
         end
         if (math.random() < 0.5) then
-          createCircle(x, 1400)
+          createCircle(x, 1100)
         else
-          createCircle(x, -1400)
+          createCircle(x, -1100)
         end
       end
     end
