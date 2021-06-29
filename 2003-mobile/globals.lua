@@ -1,7 +1,7 @@
 gw = 1920
 gh = 1080
 
-volumeValue = 100
+volumeValue = 300
 
 defaultFont = love.graphics.getFont()
 scoreFont = love.graphics.newFont('assets/BebasNeue-Light.ttf', 64)
