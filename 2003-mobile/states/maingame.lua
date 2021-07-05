@@ -120,18 +120,26 @@ function maingame:mousepressed(x, y, button)
   if not isFailed and not isPause and not isWin then
     if (#listOfCircles > 0) then
       if (x <= love.graphics.getWidth() / 2) then
-        if (math.abs(listOfCircles[1].angle) > math.pi*0.93 and math.abs(listOfCircles[1].angle) < math.pi*1.07 and listOfCircles[1].pos > 0) then
-          table.remove(listOfCircles, 1)
-          notesPassed = notesPassed + 1
-          circlehitsound:play()
+        if (math.abs(listOfCircles[1].angle) > math.pi*0.93 and math.abs(listOfCircles[1].angle) < math.pi*1.07) then
+          if (listOfCircles[1].pos > 0) then
+            table.remove(listOfCircles, 1)
+            notesPassed = notesPassed + 1
+            circlehitsound:play()
+          elseif (listOfCircles[1].pos < 0) then
+            maingame:fail()
+          end
         elseif (math.abs(listOfCircles[1].angle) > math.pi*0.84 and math.abs(listOfCircles[1].angle) < math.pi*0.93) then
           maingame:fail()
         end
       elseif (x >= love.graphics.getWidth() / 2) then
-        if (math.abs(listOfCircles[1].angle) > math.pi*0.93 and math.abs(listOfCircles[1].angle) < math.pi*1.07 and listOfCircles[1].pos < 0) then
-          table.remove(listOfCircles, 1)
-          notesPassed = notesPassed + 1
-          circlehitsound:play()
+        if (math.abs(listOfCircles[1].angle) > math.pi*0.93 and math.abs(listOfCircles[1].angle) < math.pi*1.07) then
+          if (listOfCircles[1].pos < 0) then
+            table.remove(listOfCircles, 1)
+            notesPassed = notesPassed + 1
+            circlehitsound:play()
+          elseif (listOfCircles[1].pos > 0) then
+            maingame:fail()
+          end
         elseif (math.abs(listOfCircles[1].angle) > math.pi*0.84 and math.abs(listOfCircles[1].angle) < math.pi*0.93) then
           maingame:fail()
         end
@@ -239,11 +247,11 @@ end
 
 function maingame:getLevelLength()
   if (levelIndex == 1) then
-    return 263
+    return 141
   elseif (levelIndex == 2) then
     return 174
   elseif (levelIndex == 3) then
-    return 275
+    return 136
   elseif (levelIndex == 4) then
     return 123
   end
